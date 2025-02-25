@@ -5,7 +5,6 @@ import { AddCircleOutline, ViewList, Person, Notifications, ExitToApp, AccountCi
 
 import { useDispatch } from 'react-redux';
 import { logout } from '../../redux/slices/authSlice';
-import { clearAssignedTickets } from '../../redux/slices/assigned.Slice';
 import { clearProfile } from '../../redux/slices/profileSlice';
 import { clearUsers } from '../../redux/slices/registerSlice';
 

@@ -1,7 +1,5 @@
-// export const baseUrl = 'https://ticket-app-server.onrender.com/v1/'
-// export const baseUrl = `https://ticket-app-server-staging.onrender.com/v1/`
-// export const baseUrl = "http://localhost:5000/v1/";
-export const baseUrl = `https://ticket-app-backend-hbmv.onrender.com/v1/`
+
+export const baseUrl = `http://localhost:5000/api/`
 
 //endpoints users
 export const loginEndpoint = `user/login`;

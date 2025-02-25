@@ -4,8 +4,6 @@ import { Box, List, ListItem, ListItemIcon, ListItemText, Drawer, Button } from 
 import { Dashboard, PersonAdd, BarChart, Notifications, AssignmentTurnedIn, AccountCircle, Brightness4, Brightness7, Menu, Close, ExitToApp, Business, Lock } from '@mui/icons-material';
 import { useDispatch } from 'react-redux';
 import { logout } from '../../redux/slices/authSlice';
-import { clearTicket } from '../../redux/slices/ticketSlice';
-import { clearDepartment } from '../../redux/slices/departmentSlice';
 import { clearUsers } from '../../redux/slices/registerSlice';
 import { clearRole } from '../../redux/slices/roleSlice';
 import { clearProfile } from '../../redux/slices/profileSlice';
@@ -59,37 +57,6 @@ const AdminSidebar = () => {
           </ListItemIcon>
           <ListItemText primary="Dashboard" />
         </ListItem>
-        {/* <ListItem component={Link} to="admin/notification" onClick={toggleSidebar}>
-          <ListItemIcon>
-            <Notifications sx={{ color: darkMode ? 'white' : 'black' }} />
-          </ListItemIcon>
-          <ListItemText primary="Notifications" />
-        </ListItem> */}
-        {/* <ListItem component={Link} to="admin/manageticket" onClick={toggleSidebar}>
-          <ListItemIcon>
-            <AssignmentTurnedIn sx={{ color: darkMode ? 'white' : 'black' }} />
-          </ListItemIcon>
-          <ListItemText primary="Manage Tickets" />
-        </ListItem>
-
-        <ListItem component={Link} to="admin/usermanagement" onClick={toggleSidebar}>
-          <ListItemIcon>
-            <PersonAdd sx={{ color: darkMode ? 'white' : 'black' }} />
-          </ListItemIcon>
-          <ListItemText primary="User Management" />
-        </ListItem>
-        <ListItem component={Link} to="admin/reports" onClick={toggleSidebar}>
-          <ListItemIcon>
-            <BarChart sx={{ color: darkMode ? 'white' : 'black' }} />
-          </ListItemIcon>
-          <ListItemText primary="Reports" />
-        </ListItem>
-        <ListItem component={Link} to="admin/adddepartment" onClick={toggleSidebar}>
-          <ListItemIcon>
-            <Business sx={{ color: darkMode ? 'white' : 'black' }} />
-          </ListItemIcon>
-          <ListItemText primary="Department" />
-        </ListItem> */}
         <ListItem component={Link} to="admin/changepassword" onClick={toggleSidebar}>
           <ListItemIcon>
             <Lock sx={{ color: darkMode ? 'white' : 'black' }} />

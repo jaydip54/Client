@@ -7,8 +7,6 @@ import { clearProfile } from '../../redux/slices/profileSlice';
 import { clearRole } from '../../redux/slices/roleSlice';
 import { clearUsers } from '../../redux/slices/registerSlice';
 import { logout } from '../../redux/slices/authSlice';
-import { clearTicket } from '../../redux/slices/ticketSlice';
-import { clearTickets } from '../../redux/slices/superVisorTicketSlice';
 
 const SupervisorSidebar = () => {
     const [darkMode, setDarkMode] = useState(true);

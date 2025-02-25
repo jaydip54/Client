@@ -4,7 +4,6 @@ import { Box, List, ListItem, ListItemIcon, ListItemText, Typography, Avatar, Bu
 import { AddCircleOutline, ViewList, Person, Notifications, ExitToApp, AccountCircle, Brightness4, Brightness7, Menu, Close, Dashboard, Lock } from '@mui/icons-material';
 import { useDispatch } from 'react-redux';
 import { logout } from '../../redux/slices/authSlice';
-import { clearTicket } from '../../redux/slices/ticketSlice';
 import { clearProfile } from '../../redux/slices/profileSlice';
 
 const UserSidebar = () => {

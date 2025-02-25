@@ -47,7 +47,7 @@ const UserManagementAdmin = () => {
     setOpenDialog(false);
     setuser({ name: '', email: '', department: '', number: '', password: '', role: '' });
   };
-  
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setuser(prev => ({ ...prev, [name]: value }));
