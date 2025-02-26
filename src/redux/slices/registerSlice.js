@@ -2,12 +2,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 // Import configuration and base URL
-import { baseUrl } from "../../Atoms/constatnt";
+import { AddUserEndpoint, baseUrl, CommonUserEndpoint, GetUserEndpoint } from "../../Atoms/constatnt";
 
-// Define initial state for the register slice
 let initialState = {
     register: [],
-    technicianDepartment: [],
     isLoading: false,
     isError: null
 }
@@ -15,12 +13,8 @@ let initialState = {
 // Async thunk for registering a user
 export const addUser = createAsyncThunk("register/post", async (payload, { rejectWithValue }) => {
     try {
-        let { data, endpoint, token } = payload;
-        let response = await axios.post(baseUrl + endpoint, data, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
+        let { data } = payload;
+        let response = await axios.post(baseUrl + AddUserEndpoint, data);
         return response.data.data;
     }
     catch (error) {
@@ -29,15 +23,9 @@ export const addUser = createAsyncThunk("register/post", async (payload, { rejec
 });
 
 // Async thunk for getting user data
-export const getUser = createAsyncThunk("register/get", async (payload, { rejectWithValue }) => {
+export const getUser = createAsyncThunk("register/get", async (_, { rejectWithValue }) => {
     try {
-        let { endpoint, token } = payload;
-        let response = await axios.get(baseUrl + endpoint, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        // console.log("🚀 ~ getUser ~ response:", response.data.data)
+        let response = await axios.get(baseUrl + GetUserEndpoint);
         return response.data.data;
     }
     catch (error) {
@@ -45,37 +33,28 @@ export const getUser = createAsyncThunk("register/get", async (payload, { reject
     }
 });
 
-export const getUser_SuperVisor_Department = createAsyncThunk("register/getdepartment", async (payload, { rejectWithValue }) => {
+
+// Async thunk for deleting a user
+export const deleteUser = createAsyncThunk("register/delete", async (userId, { rejectWithValue }) => {
     try {
-        let { endpoint, token } = payload;
-        let response = await axios.get(baseUrl + endpoint, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        // console.log("🚀 ~ getUser ~ response:", response.data.data)
-        return response.data.data;
-    }
-    catch (error) {
+        await axios.delete(`${baseUrl + CommonUserEndpoint}${userId}`);
+        return userId;
+    } catch (error) {
         return rejectWithValue(error?.response?.data?.message || error.message || 'An error occurred');
     }
 });
 
-export const getUser_SuperVisor_Department_technician = createAsyncThunk("register/getdepartment_technician", async (payload, { rejectWithValue }) => {
+// Async thunk for updating a user
+export const updateUser = createAsyncThunk("register/update", async ({ userId, updatedData }, { rejectWithValue }) => {
     try {
-        let { endpoint, token } = payload;
-        let response = await axios.get(baseUrl + endpoint, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        // console.log("🚀 ~ getUser ~ response:", response.data.data)
+        let response = await axios.put(`${baseUrl + CommonUserEndpoint}/${userId}`, updatedData);
         return response.data.data;
-    }
-    catch (error) {
+    } catch (error) {
         return rejectWithValue(error?.response?.data?.message || error.message || 'An error occurred');
     }
 });
+
+
 
 
 // Create the register slice
@@ -87,7 +66,6 @@ export const registerSlice = createSlice({
             state.register = [];
             state.isError = null;
             state.isLoading = false;
-            state.technicianDepartment = [];
         }
 
 
@@ -126,39 +104,11 @@ export const registerSlice = createSlice({
                 state.isLoading = false;
                 state.isError = action.payload;
             })
-            // Handle pending state for getUser_SuperVisor_Department
-            .addCase(getUser_SuperVisor_Department.pending, (state) => {
-                state.isLoading = true;
-                state.isError = null;
-            })
-            // Handle successful state for getUser_SuperVisor_Department
-            .addCase(getUser_SuperVisor_Department.fulfilled, (state, action) => {
-                state.isLoading = false;
-                state.isError = null;
-                state.register = action.payload;
-            })
-            // Handle rejected state for getUser_Supervisor_Department
-            .addCase(getUser_SuperVisor_Department.rejected, (state, action) => {
-                state.isLoading = false;
-                state.isError = action.payload;
-            })
-            // Handle pending state for getUser_SuperVisor_Department_technician
-            .addCase(getUser_SuperVisor_Department_technician.pending, (state) => {
-                state.isLoading = true;
-                state.isError = null;
-            })
-            // Handle successful state for getUser_SuperVisor_Department_technician
-            .addCase(getUser_SuperVisor_Department_technician.fulfilled, (state, action) => {
-                state.isLoading = false;
-                state.isError = null;
-                state.technicianDepartment = action.payload;
-            })
-            // Handle rejected state for getUser_Supervisor_Department_technician
-            .addCase(getUser_SuperVisor_Department_technician.rejected, (state, action) => {
-                state.isLoading = false;
-                state.isError = action.payload;
-            })
+
     }
+
+
 })
+console.log(initialState.register);
 export const { clearUsers } = registerSlice.actions
 export default registerSlice.reducer;

@@ -6,9 +6,8 @@ let initialState = {
     token: null,
     isLoading: false,
     isError: null,
-    auth: false,
-    message: null,
-    role: null,
+    status: false,
+    type: null,
 
     resetPassword: {
         error: null,
@@ -91,7 +90,7 @@ export const ChangePasswordApi = createAsyncThunk("auth/change_password", async 
         console.log("🚀 ~ ChangePasswordApi ~ data:", data)
         const response = await axios.post(`${baseUrl}${endpoint}`, data);
         console.log(response.data.message);
-        
+
         return response.data;
     } catch (error) {
         console.log(error?.response?.data?.message || error.message);
@@ -100,27 +99,14 @@ export const ChangePasswordApi = createAsyncThunk("auth/change_password", async 
     }
 });
 
-// 6. Forgot Password API
-// export const ForgotPasswordApi = createAsyncThunk("auth/forgot_password", async (payload, { rejectWithValue }) => {
-//     try {
-//         const { data, endpoint } = payload;
-//         const response = await axios.post(`${baseUrl}${endpoint}`, data);
-//         return response.data;
-//     } catch (error) {
-//         return rejectWithValue(error?.response?.data?.message || error.message || 'An error occurred');
-//     }
-// });
-// Slice definition
 let authSlice = createSlice({
     name: "auth",
     initialState,
     reducers: {
         logout(state) {
-            // Clear user data upon logout
-            state.role = null;
-            state.auth = false;
+            state.status = false;
             state.token = null;
-            state.message = null;
+            state.type = null;
             state.resetPassword.successMessage = null;
             state.resetPassword.error = null;
             state.sendOtp.successMessage = null;
@@ -160,17 +146,13 @@ let authSlice = createSlice({
                 state.isLoading = true;
                 state.isError = null;
                 state.token = null;
-                state.message = null;
-                state.role = null;
-                state.auth = false;
+                state.type = null;
             })
             .addCase(loginapi.fulfilled, (state, action) => {
                 state.isError = null;
                 state.isLoading = false;
-                state.auth = action.payload.auth;
                 state.token = action.payload.token;
-                state.message = action.payload.message;
-                state.role = action.payload.user;
+                state.type = action.payload.type;
             })
             .addCase(loginapi.rejected, (state, action) => {
                 state.isLoading = false;

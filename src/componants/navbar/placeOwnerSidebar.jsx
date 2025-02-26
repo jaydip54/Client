@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Box, List, ListItem, ListItemIcon, ListItemText, Typography, Avatar, Button } from '@mui/material';
-import { AddCircleOutline, ViewList, Person, Notifications, ExitToApp, AccountCircle, Brightness4, Brightness7, Menu, Close, Dashboard, Assignment, SupervisorAccount, Lock } from '@mui/icons-material';
-
+import { Box, List, ListItem, ListItemIcon, ListItemText, Button } from '@mui/material';
+import { AddCircleOutline, ViewList, ExitToApp, AccountCircle, Brightness4, Brightness7, Menu, Close, Dashboard, Assessment, AssignmentInd, AssignmentTurnedIn, PersonAdd, Lock, History, Feedback, LocalShipping } from '@mui/icons-material';
 import { useDispatch } from 'react-redux';
-import { logout } from '../../redux/slices/authSlice';
 import { clearProfile } from '../../redux/slices/profileSlice';
-import { clearUsers } from '../../redux/slices/registerSlice';
-
-const TechnicianSidebar = () => {
+import { logout } from '../../redux/slices/authSlice';
+import PinDropIcon from '@mui/icons-material/PinDrop';
+const SupervisorSidebar = () => {
     const [darkMode, setDarkMode] = useState(true);
     const [isSidebarVisible, setIsSidebarVisible] = useState(false);
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
+
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
     const toggleTheme = () => {
         setDarkMode(!darkMode);
     };
@@ -22,10 +21,8 @@ const TechnicianSidebar = () => {
     };
 
     const handleLogout = () => {
-        dispatch(logout())
-        dispatch(clearAssignedTickets())
         dispatch(clearProfile())
-        dispatch(clearUsers())
+        dispatch(logout())
         navigate('/')
     };
 
@@ -101,7 +98,7 @@ const TechnicianSidebar = () => {
                 }}
             >
                 <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
-                    <h1>TECHNICIAN</h1>
+                    <h1>SUPERVISOR</h1>
                     <h2>Dashboard</h2>
                 </div>
 
@@ -112,37 +109,34 @@ const TechnicianSidebar = () => {
                         </ListItemIcon>
                         <ListItemText primary="Dashboard" />
                     </ListItem>
-                    <ListItem component={Link} to="technician/assignedtickets" onClick={toggleSidebar}>
+
+                    <ListItem component={Link} to="/history" onClick={toggleSidebar}>
                         <ListItemIcon>
-                            <ViewList sx={{ color: darkMode ? 'white' : 'black' }} />
+                            <History sx={{ color: darkMode ? 'white' : 'black' }} />
                         </ListItemIcon>
-                        <ListItemText primary="Assigned Tickets" />
+                        <ListItemText primary="Personal Login History" />
                     </ListItem>
-                    <ListItem component={Link} to="technician/updateticket" onClick={toggleSidebar}>
+
+                    <ListItem component={Link} to="/feedback" onClick={toggleSidebar}>
                         <ListItemIcon>
-                            <Assignment sx={{ color: darkMode ? 'white' : 'black' }} />
+                            <Feedback sx={{ color: darkMode ? 'white' : 'black' }} />
                         </ListItemIcon>
-                        <ListItemText primary="Update Ticket Status" />
+                        <ListItemText primary="Give Feedback" />
                     </ListItem>
-                    {/* <ListItem component={Link} to="technician/documentation" onClick={toggleSidebar}>
+                    <ListItem component={Link} to="/packages" onClick={toggleSidebar}>
                         <ListItemIcon>
-                            <AddCircleOutline sx={{ color: darkMode ? 'white' : 'black' }} />
+                            <LocalShipping sx={{ color: darkMode ? 'white' : 'black' }} />
                         </ListItemIcon>
-                        <ListItemText primary="Documentation" />
+                        <ListItemText primary="Packages" />
                     </ListItem>
-                    <ListItem component={Link} to="technician/supervisorassign" onClick={toggleSidebar}>
+                    <ListItem component={Link} to="/parkingspacemanage" onClick={toggleSidebar}>
                         <ListItemIcon>
-                            <SupervisorAccount sx={{ color: darkMode ? 'white' : 'black' }} />
+                            <PinDropIcon sx={{ color: darkMode ? 'white' : 'black' }} />
                         </ListItemIcon>
-                        <ListItemText primary="Supervisor Assign" />
+                        <ListItemText primary="Parking Space Manage" />
                     </ListItem>
-                    <ListItem component={Link} to="technician/notification" onClick={toggleSidebar}>
-                        <ListItemIcon>
-                            <Notifications sx={{ color: darkMode ? 'white' : 'black' }} />
-                        </ListItemIcon>
-                        <ListItemText primary="Notifications" />
-                    </ListItem> */}
-                    <ListItem component={Link} to="technician/changepassword" onClick={toggleSidebar}>
+
+                    <ListItem component={Link} to="supervisor/changepassword" onClick={toggleSidebar}>
                         <ListItemIcon>
                             <Lock sx={{ color: darkMode ? 'white' : 'black' }} />
                         </ListItemIcon>
@@ -172,4 +166,4 @@ const TechnicianSidebar = () => {
     );
 };
 
-export default TechnicianSidebar;
+export default SupervisorSidebar;

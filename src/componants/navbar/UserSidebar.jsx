@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Box, List, ListItem, ListItemIcon, ListItemText, Typography, Avatar, Button } from '@mui/material';
-import { AddCircleOutline, ViewList, Person, Notifications, ExitToApp, AccountCircle, Brightness4, Brightness7, Menu, Close, Dashboard, Lock } from '@mui/icons-material';
+import { Box, List, ListItem, ListItemIcon, ListItemText, Button } from '@mui/material';
+import { ExitToApp, AccountCircle, Brightness4, Brightness7, Menu, Close, Dashboard, Lock, History, Feedback, LocalShipping } from '@mui/icons-material';
 import { useDispatch } from 'react-redux';
 import { logout } from '../../redux/slices/authSlice';
 import { clearProfile } from '../../redux/slices/profileSlice';
-
+import PinDropIcon from '@mui/icons-material/PinDrop';
 const UserSidebar = () => {
     const [darkMode, setDarkMode] = useState(true);
     const [isSidebarVisible, setIsSidebarVisible] = useState(false);
@@ -22,7 +22,6 @@ const UserSidebar = () => {
     };
 
     const handleLogout = () => {
-        dispatch(clearTicket())
         dispatch(clearProfile())
         dispatch(logout())
         navigate('/')
@@ -112,25 +111,32 @@ const UserSidebar = () => {
                         </ListItemIcon>
                         <ListItemText primary="Dashboard" />
                     </ListItem>
-                    {/* <ListItem component={Link} to="user/ticketcreation" onClick={toggleSidebar}>
-                        <ListItemIcon>
-                            <AddCircleOutline sx={{ color: darkMode ? 'white' : 'black' }} />
-                        </ListItemIcon>
-                        <ListItemText primary="Create Ticket" />
-                    </ListItem>
-                    <ListItem component={Link} to="user/mytickets" onClick={toggleSidebar}>
-                        <ListItemIcon>
-                            <ViewList sx={{ color: darkMode ? 'white' : 'black' }} />
-                        </ListItemIcon>
-                        <ListItemText primary="My Tickets" />
-                    </ListItem> */}
 
-                    {/* <ListItem component={Link} to="user/notification" onClick={toggleSidebar}>
+                    <ListItem component={Link} to="/history" onClick={toggleSidebar}>
                         <ListItemIcon>
-                            <Notifications sx={{ color: darkMode ? 'white' : 'black' }} />
+                            <History sx={{ color: darkMode ? 'white' : 'black' }} />
                         </ListItemIcon>
-                        <ListItemText primary="Notifications" />
-                    </ListItem> */}
+                        <ListItemText primary="Personal Login History" />
+                    </ListItem>
+                    <ListItem component={Link} to="/feedback" onClick={toggleSidebar}>
+                        <ListItemIcon>
+                            <Feedback sx={{ color: darkMode ? 'white' : 'black' }} />
+                        </ListItemIcon>
+                        <ListItemText primary="Give Feedback" />
+                    </ListItem>
+                    <ListItem component={Link} to="/packages" onClick={toggleSidebar}>
+                        <ListItemIcon>
+                            <LocalShipping sx={{ color: darkMode ? 'white' : 'black' }} />
+                        </ListItemIcon>
+                        <ListItemText primary="Packages" />
+                    </ListItem>
+
+                    <ListItem component={Link} to="/parkingspace" onClick={toggleSidebar}>
+                        <ListItemIcon>
+                            <PinDropIcon sx={{ color: darkMode ? 'white' : 'black' }} />
+                        </ListItemIcon>
+                        <ListItemText primary="Parking Space" />
+                    </ListItem>
 
                     <ListItem component={Link} to="user/changepassword" onClick={toggleSidebar}>
                         <ListItemIcon>

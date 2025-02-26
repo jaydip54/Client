@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios"; ``
-import Cookies from "js-cookie";
-import { baseUrl, ProfileUserEndpoint } from "../../Atoms/constatnt";
+import axios from "axios";
+import { baseUrl, } from "../../Atoms/constatnt";
 
 let initialState = {
     profile: null,
@@ -13,10 +12,10 @@ export const getProfile = createAsyncThunk("profile/get", async (payload, { reje
     try {
         let response = await axios.get(`${baseUrl}${payload.endpoint}`, {
             headers: {
-                'Authorization': `Bearer ${payload.token}`
+                'Authorization': `${payload.token}`
             }
         })
-        return response.data.user;
+        return response.data.data;
     } catch (error) {
         return rejectWithValue(error?.response?.data?.message || error.message || 'An error occurred');
     }

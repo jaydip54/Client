@@ -1,78 +1,87 @@
-import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import Login from './componants/logincomponants/Login';
 import Dashboard from './componants/pages/Dashboard';
 import Profile from './componants/profile/Profile';
-import NotFound from './componants/pages/NotFound';
 import { useEffect } from 'react';
 import UserSidebar from './componants/navbar/UserSidebar';
 import UserDashboard from './componants/pages/UserDashboard';
-import TechnicianSidebar from './componants/navbar/TechnicianSidebar';
 import AdminSidebar from './componants/navbar/AdminSidebar';
-import SupervisorSidebar from './componants/navbar/SupervisorSidebar';
-import SupervisorDashboard from './componants/pages/placeowner/SupervisorDashboard';
-
+import SupervisorSidebar from './componants/navbar/placeOwnerSidebar';
 import { useDispatch, useSelector } from 'react-redux';
-import { Getassignedfalse_ticket, Getassignedtrue_ticket, GetbyDepartmentAssigned, getloginsupervisorbydepartmentEndpoint, GetLoginUserTicketEndpoint, GetSuperVisorDepartment, GetSuperVisorDepartment_technician_only, GetTicketEndpoint, GetUserEndpoint, ProfileUserEndpoint, RoleEndpoint } from './Atoms/constatnt';
-
-import { getUser, getUser_SuperVisor_Department, getUser_SuperVisor_Department_technician } from './redux/slices/registerSlice';
-import { getAllRoles } from './redux/slices/roleSlice';
+import { getUser } from './redux/slices/registerSlice';
 import { getProfile } from './redux/slices/profileSlice';
 import ForgotPassword from './componants/logincomponants/ForgotPassword';
 import ResetPassword from './componants/logincomponants/ResetPassword';
-
+import ParkingOwnerDashboard from './componants/pages/placeownerDashboard';
+import OnlineUserRegistration from './componants/pages/SignUp';
+import CityManagement from './componants/pages/CityManagement';
+import AreaManagement from './componants/pages/AreaManagement';
+import { fetchCities } from './redux/slices/city';
+import { fetchAreas } from './redux/slices/area';
+import UserManagement from './componants/pages/UserManagement';
+import { ProfileUserEndpoint } from './Atoms/constatnt';
+import CategoryManagement from './componants/pages/Category';
+import { fetchCategories } from './redux/slices/category';
+import LoginHistory from './componants/pages/LoginHistory';
+import { fetchAllLoginHistory, fetchLoginHistoryByUserLogin } from './redux/slices/loginhistory';
+import UserLoginHistory from './componants/pages/UserLoginHistory';
+import SubscribeEmail from './componants/pages/SubscribeEmail';
+import ManageSubscriptions from './componants/pages/ManageSubscriptions';
+import FeedbackForm from './componants/pages/FeedbackForm';
+import ManageFeedback from './componants/pages/ManageFeedback';
+import UserPackageList from './componants/pages/UserPackageList';
+import PackageList from './componants/pages/PackageList';
+import { fetchPackages } from './redux/slices/package';
+import { fetchParkingSpaces } from './redux/slices/parkingSpace';
+import UserParkingList from './componants/pages/UserParkingList';
 
 function App() {
-  let { role, auth, token } = useSelector((state) => state.auth)
   let dispatch = useDispatch();
+  dispatch(fetchCities());
+  dispatch(fetchAreas())
+  dispatch(fetchParkingSpaces());
+  let { type, token } = useSelector((state) => state.auth);
 
+  dispatch(fetchPackages({ token: token }));
   useEffect(() => {
-    if (role !== null && role !== undefined && role !== "" && role === 'ADMIN' && auth === true) {
 
-      dispatch(getUser({ endpoint: GetUserEndpoint, token: token }));
-      dispatch(getAllRoles({ endpoint: RoleEndpoint, token: token }));
+    if (token && type !== null) {
       dispatch(getProfile({ endpoint: ProfileUserEndpoint, token: token }));
+      if (type === 1) {
+        dispatch(getUser());
+        dispatch(fetchCategories({ token: token }))
+        dispatch(fetchAllLoginHistory({ token }));
+      }
+      if (type === 2) {
+        dispatch(fetchCategories({ token: token }))
+        dispatch(fetchLoginHistoryByUserLogin({ token: token }))
+      }
+      if (type === 0) {
+        dispatch(fetchLoginHistoryByUserLogin({ token: token }))
+      }
     }
-    if (role !== null && role !== undefined && role !== "" && role === 'STAFF' && auth === true) {
-
-      dispatch(getProfile({ endpoint: ProfileUserEndpoint, token: token }));
-    }
-    if (role !== null && role !== undefined && role !== "" && role === 'TECHNICIAN' && auth === true) {
-      dispatch(getProfile({ endpoint: ProfileUserEndpoint, token: token }));
-    }
-    if (role !== null && role !== undefined && role !== "" && role === 'SUPERVISOR' && auth === true) {
-      dispatch(getProfile({ endpoint: ProfileUserEndpoint, token: token }));
-      dispatch(getAllRoles({ endpoint: RoleEndpoint, token: token }));
-
-      dispatch(getPersonalTickets({ endpoint: GetLoginUserTicketEndpoint, token: token }));
-      dispatch(getAssignFalseTickets({ endpoint: Getassignedfalse_ticket, token: token }));
-      dispatch(getDepartmentTickets({ endpoint: getloginsupervisorbydepartmentEndpoint, token: token }));
-      dispatch(getAssignTrueTickets({ endpoint: Getassignedtrue_ticket, token: token }));
-
-      dispatch(getUser_SuperVisor_Department({ endpoint: GetSuperVisorDepartment, token: token }));
-      dispatch(getUser_SuperVisor_Department_technician({ endpoint: GetSuperVisorDepartment_technician_only, token: token }));
-
-      dispatch(getAssignedTickets({ endpoint: GetbyDepartmentAssigned, token: token }));
-
-    }
-  }, [
-    // role,
-    //  auth,
-    token
-  ]);
-
+  }, [token, type, dispatch]);
 
   const renderRoutes = () => {
-    switch (role) {
+    switch (type) {
       case 1:
         return (
           <>
             <AdminSidebar />
             <Routes>
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/citymangement" element={<CityManagement />} />
+              <Route path="/areamanagement" element={<AreaManagement />} />
+              <Route path="/categorymanage" element={<CategoryManagement />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/loginhistory" element={<LoginHistory />} />
+              <Route path='/usermanagement' element={<UserManagement />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/packages" element={<PackageList />} />
+              <Route path="/managesubscri" element={<ManageSubscriptions />} />
               <Route path='/admin/changepassword' element={<ResetPassword />} />
-              <Route path="*" element={<NotFound />} />
+              <Route path="/managefeedback" element={<ManageFeedback />} />
+              <Route path="/history" element={<UserLoginHistory />} />
             </Routes>
           </>
         );
@@ -85,7 +94,10 @@ function App() {
               <Route path="/dashboard" element={<UserDashboard />} />
               <Route path="/profile" element={<Profile />} />
               <Route path='/user/changepassword' element={<ResetPassword />} />
-              <Route path="*" element={<NotFound />} />
+              <Route path="/history" element={<UserLoginHistory />} />
+              <Route path="/feedback" element={<FeedbackForm />} />
+              <Route path="/packages" element={<UserPackageList />} />
+              <Route path="/parkingspace" element={< UserParkingList />} />
             </Routes>
           </>
         );
@@ -95,34 +107,26 @@ function App() {
             <SupervisorSidebar />
             <Routes>
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
-              <Route path="/dashboard" element={<SupervisorDashboard />} />
+              <Route path="/dashboard" element={<ParkingOwnerDashboard />} />
               <Route path='/supervisor/changepassword' element={<ResetPassword />} />
               <Route path="/profile" element={<Profile />} />
-              <Route path="*" element={<NotFound />} />
+              <Route path="/packages" element={<PackageList />} />
+              <Route path="/history" element={<UserLoginHistory />} />
+              <Route path="/feedback" element={<FeedbackForm />} />
             </Routes>
           </>
         );
-      case 3:
-        return (
-          <>
-            <TechnicianSidebar />
-            <Routes>
-              <Route path="*" element={<Navigate to="/dashboard" replace />} />
-              <Route path='/technician/changepassword' element={<ResetPassword />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </>
-        );
+
       default:
         return (
           <Routes>
             <Route path='/' element={<Login />} />
             <Route path='/forgotpassword' element={<ForgotPassword />} />
+            <Route path='/signup' element={<OnlineUserRegistration />} />
+            <Route path='/emailsub' element={<SubscribeEmail />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
-
-        )
+        );
     }
   };
 

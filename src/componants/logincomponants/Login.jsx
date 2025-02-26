@@ -72,6 +72,7 @@ const Login = () => {
         px: isMobile ? 2 : 0,
       }}
     >
+
       <Typography component="h1" variant="h5" sx={{ mb: 2, fontSize: isMobile ? '1.5rem' : '2rem' }}>
         Sign In
       </Typography>
@@ -113,6 +114,16 @@ const Login = () => {
       <Typography variant="body2" sx={{ mb: 2, textAlign: 'center' }}>
         <MuiLink component={Link} to="/forgotpassword" color="primary">
           Forgot Password?
+        </MuiLink>
+      </Typography>
+      <Typography variant="body2" sx={{ mb: 2, textAlign: 'center' }}>
+        <MuiLink component={Link} to="/signup" color="primary">
+          Sign Up
+        </MuiLink>
+      </Typography>
+      <Typography variant="body2" sx={{ mb: 2, textAlign: 'center' }}>
+        <MuiLink component={Link} to="/emailsub" color="primary">
+          Email Subscribed
         </MuiLink>
       </Typography>
       <Snackbar open={isError ? true : false} autoHideDuration={6000} onClose={() => dispatch({ type: 'auth/clearError' })}>

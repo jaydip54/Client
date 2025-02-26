@@ -2,7 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Box, Paper, Typography, TextField, Button, Link as MuiLink, Snackbar, Alert } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { SendOtpApi, VerifyOtpApi, ChangePasswordApi, clearOtpMessage, clearVerifyOtpMessage, clearChangePasswordMessage } from '../../redux/slices/authSlice'; // Make sure to import all relevant actions
+import {
+    SendOtpApi,
+    VerifyOtpApi,
+    ChangePasswordApi,
+    clearOtpMessage,
+    clearVerifyOtpMessage,
+    clearChangePasswordMessage
+} from '../../redux/slices/authSlice';
 import { ChangePasswordEndpoint, FillOtpEndpoint, SendOtpEndpoint } from '../../Atoms/constatnt';
 
 const ForgotPassword = () => {
@@ -13,113 +20,90 @@ const ForgotPassword = () => {
     const [otpVerified, setOtpVerified] = useState(false);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
-    const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // Default severity
+    const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const sendOtpError = useSelector((state) => state.auth.sendOtp.error);
-    const sendOtpLoading = useSelector((state) => state.auth.sendOtp.isLoading);
-    const verifyOtpError = useSelector((state) => state.auth.verifyOtp.error);
-    const changePasswordError = useSelector((state) => state.auth.changePassword.error);
-    const changePasswordLoading = useSelector((state) => state.auth.changePassword.isLoading);
-    const verifyOtpLoading = useSelector((state) => state.auth.verifyOtp.isLoading);
-    const sendOtpSuccessMessage = useSelector((state) => state.auth.sendOtp.successMessage);
-    const verifyOtpSuccessMessage = useSelector((state) => state.auth.verifyOtp.successMessage);
-    const changePasswordSuccessMessage = useSelector((state) => state.auth.changePassword.successMessage);
+    const {
+        sendOtp,
+        verifyOtp,
+        changePassword
+    } = useSelector((state) => state.auth);
 
     useEffect(() => {
-        // Show snackbar for success messages only
-        if (sendOtpSuccessMessage) {
-            setSnackbarMessage(sendOtpSuccessMessage || 'OTP Sent Successfully!');
-            setSnackbarOpen(true);
-            setSnackbarSeverity('success'); // Set severity to success
-            setOtpSent(true);
-            setTimeout(() => {
-                dispatch(clearOtpMessage())
-            }, 2000);
-        }
-
-        if (verifyOtpSuccessMessage) {
-            setOtpVerified(true);
-            setSnackbarMessage('OTP verified successfully!');
-            setSnackbarOpen(true);
-            setSnackbarSeverity('success'); // Set severity to success
-            setTimeout(() => {
-                dispatch(clearVerifyOtpMessage())
-            }, 2000);
-        }
-
-        if (changePasswordSuccessMessage) {
-            setSnackbarMessage(changePasswordSuccessMessage);
-            setSnackbarOpen(true);
+        if (sendOtp.successMessage) {
+            setSnackbarMessage(sendOtp.successMessage);
             setSnackbarSeverity('success');
-            setPassword('')
-            setTimeout(() => {
-                dispatch(clearChangePasswordMessage())
-            }, 2000);
+            setSnackbarOpen(true);
+            setOtpSent(true);
+            dispatch(clearOtpMessage());
+        }
+
+        if (verifyOtp.successMessage) {
+            setSnackbarMessage('OTP verified successfully!');
+            setSnackbarSeverity('success');
+            setSnackbarOpen(true);
+            setOtpVerified(true);
+            dispatch(clearVerifyOtpMessage());
+        }
+
+        if (changePassword.successMessage) {
+            setSnackbarMessage(changePassword.successMessage);
+            setSnackbarSeverity('success');
+            setSnackbarOpen(true);
+            setPassword('');
+            dispatch(clearChangePasswordMessage());
             setTimeout(() => navigate('/'), 2000);
         }
 
-        // Handle errors and show them in snackbar
-        if (sendOtpError) {
-            setSnackbarMessage(sendOtpError);
+        if (sendOtp.error) {
+            setSnackbarMessage(sendOtp.error);
+            setSnackbarSeverity('error');
             setSnackbarOpen(true);
-            setSnackbarSeverity('error'); // Set severity to error
         }
 
-        if (verifyOtpError) {
-            setSnackbarMessage(verifyOtpError);
+        if (verifyOtp.error) {
+            setSnackbarMessage(verifyOtp.error);
+            setSnackbarSeverity('error');
             setSnackbarOpen(true);
-            setSnackbarSeverity('error'); // Set severity to error
         }
 
-        if (changePasswordError) {
-            setSnackbarMessage(changePasswordError);
+        if (changePassword.error) {
+            setSnackbarMessage(changePassword.error);
+            setSnackbarSeverity('error');
             setSnackbarOpen(true);
-            setSnackbarSeverity('error'); // Set severity to error
         }
-
     }, [
-        sendOtpSuccessMessage,
-        verifyOtpSuccessMessage,
-        changePasswordSuccessMessage,
-        sendOtpError,
-        verifyOtpError,
-        changePasswordError,
-        navigate
+        sendOtp.successMessage, verifyOtp.successMessage, changePassword.successMessage,
+        sendOtp.error, verifyOtp.error, changePassword.error, dispatch, navigate
     ]);
 
-    const handleEmailChange = (e) => setEmail(e.target.value);
-    const handleOtpChange = (e) => setOtp(e.target.value);
-    const handlePasswordChange = (e) => setPassword(e.target.value);
+    const handleEmailChange = (e) => setEmail(e.target.value.trim());
+    const handleOtpChange = (e) => setOtp(e.target.value.trim());
+    const handlePasswordChange = (e) => setPassword(e.target.value.trim());
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
         dispatch(SendOtpApi({
-            data: {
-                email: email.toString()
-            }, endpoint: SendOtpEndpoint
+            data: { email },
+            endpoint: SendOtpEndpoint
         }));
     };
 
     const handleOtpVerification = (e) => {
         e.preventDefault();
         dispatch(VerifyOtpApi({
-            data: {
-                email: email.toString(),
-                otp: otp.toString().trim()
-            }, endpoint: FillOtpEndpoint
+            data: { email, otp },
+            endpoint: FillOtpEndpoint
         }));
     };
 
     const handlePasswordSubmit = (e) => {
         e.preventDefault();
         dispatch(ChangePasswordApi({
-            data: {
-                email: email.toString(),
-                newpassword: password.toString()
-            }, endpoint: ChangePasswordEndpoint
+            data: { email, newpassword: password },
+            endpoint: ChangePasswordEndpoint
         }));
     };
 
@@ -132,12 +116,11 @@ const ForgotPassword = () => {
                     Forgot Password
                 </Typography>
 
-                {/* Email Input Form */}
                 {!otpSent && (
                     <form onSubmit={handleSubmit}>
                         <TextField
                             label="Email Address"
-                            type="text"
+                            type="email"
                             fullWidth
                             margin="normal"
                             variant="outlined"
@@ -151,14 +134,13 @@ const ForgotPassword = () => {
                             color="primary"
                             fullWidth
                             sx={{ marginTop: 2 }}
-                            disabled={sendOtpLoading} // Disable button when loading
+                            disabled={sendOtp.isLoading}
                         >
-                            {sendOtpLoading ? 'Sending...' : 'Send OTP'}
+                            {sendOtp.isLoading ? 'Sending...' : 'Send OTP'}
                         </Button>
                     </form>
                 )}
 
-                {/* OTP Input Form */}
                 {otpSent && !otpVerified && (
                     <form onSubmit={handleOtpVerification}>
                         <TextField
@@ -177,14 +159,13 @@ const ForgotPassword = () => {
                             color="primary"
                             fullWidth
                             sx={{ marginTop: 2 }}
-                            disabled={verifyOtpLoading} // Disable button when loading
+                            disabled={verifyOtp.isLoading}
                         >
-                            {verifyOtpLoading ? 'Verifying...' : 'Verify OTP'}
+                            {verifyOtp.isLoading ? 'Verifying...' : 'Verify OTP'}
                         </Button>
                     </form>
                 )}
 
-                {/* New Password Input Form */}
                 {otpVerified && (
                     <form onSubmit={handlePasswordSubmit}>
                         <TextField
@@ -203,9 +184,9 @@ const ForgotPassword = () => {
                             color="primary"
                             fullWidth
                             sx={{ marginTop: 2 }}
-                            disabled={changePasswordLoading} // Disable button when loading
+                            disabled={changePassword.isLoading}
                         >
-                            {changePasswordLoading ? 'Changing...' : 'Set New Password'}
+                            {changePassword.isLoading ? 'Changing...' : 'Set New Password'}
                         </Button>
                     </form>
                 )}
@@ -217,7 +198,6 @@ const ForgotPassword = () => {
                     </MuiLink>
                 </Typography>
 
-                {/* Snackbar for success or error message */}
                 <Snackbar open={snackbarOpen} autoHideDuration={1900} onClose={handleSnackbarClose}>
                     <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
                         {snackbarMessage}

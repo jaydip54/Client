@@ -1,130 +1,50 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Typography, Grid, Paper, Card, CardContent, List, ListItem, ListItemText, Divider, Avatar, Chip, useMediaQuery, FormControl, InputLabel, Select, MenuItem, Snackbar, Alert, CircularProgress } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Typography, Grid, Paper, Card, CardContent, List, ListItem, ListItemText, Divider, Chip, FormControl, InputLabel, Select, MenuItem, Snackbar, Alert } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { Assignment, Build, CheckCircle, ChatBubble, CalendarToday, PauseCircle } from '@mui/icons-material';
+import { DirectionsCar, Event, CheckCircle, Warning, LocalParking } from '@mui/icons-material';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { useSelector } from 'react-redux';
 
 const UserDashboard = () => {
   const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
-
-  const { ticket, isError, isLoading } = useSelector(state => state.ticket);
-
-  const [ticketSummary, setTicketSummary] = useState([
-    { status: 'Open', count: 0, icon: <Assignment color="error" /> },
-    { status: 'In Progress', count: 0, icon: <Build color="primary" /> },
-    { status: 'Resolved', count: 0, icon: <CheckCircle color="success" /> },
-    { status: 'Hold', count: 0, icon: <PauseCircle color="warning" /> },
-  ]);
-
-  const [recentTickets, setRecentTickets] = useState([]);
-  const [ticketTrends, setTicketTrends] = useState([]);
   const [dayFilter, setDayFilter] = useState(0);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    processTicketData(ticket);
-  }, [ticket, dayFilter]);
-
-  const processTicketData = (tickets) => {
-    const now = new Date();
-    now.setHours(0, 0, 0, 0);
-
-    const filteredTickets = tickets.filter(ticket => {
-      const ticketDate = new Date(ticket.createdAt);
-      ticketDate.setHours(0, 0, 0, 0);
-      if (dayFilter === 0) {
-        return ticketDate.getTime() === now.getTime();
-      } else if (dayFilter === 'all') {
-        return true;
-      } else {
-        const diffTime = Math.abs(now - ticketDate);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        return diffDays <= dayFilter;
-      }
-    });
-
-    const summary = {
-      Open: 0,
-      'In Progress': 0,
-      Resolved: 0,
-      Hold: 0
-    };
-
-    filteredTickets.forEach(ticket => {
-      if (summary.hasOwnProperty(ticket.status)) {
-        summary[ticket.status]++;
-      }
-    });
-
-    setTicketSummary([
-      { status: 'Open', count: summary.Open, icon: <Assignment color="error" /> },
-      { status: 'In Progress', count: summary['In Progress'], icon: <Build color="primary" /> },
-      { status: 'Resolved', count: summary.Resolved, icon: <CheckCircle color="success" /> },
-      { status: 'Hold', count: summary.Hold, icon: <PauseCircle color="warning" /> },
-    ]);
-
-    setRecentTickets(filteredTickets.slice(0, 3).map(ticket => ({
-      id: ticket._id,
-      status: ticket.status,
-      description: ticket.title
-    }))); 
-
-
-    const trends = [
-      { name: 'Open', value: summary.Open },
-      { name: 'In Progress', value: summary['In Progress'] },
-      { name: 'Resolved', value: summary.Resolved },
-      { name: 'Hold', value: summary.Hold },
-    ];
-    setTicketTrends(trends);
-  };
-
-  const upcomingMaintenance = [
-    { id: 1, title: 'Server Maintenance', date: '2023-07-15', time: '22:00 - 23:00' },
-    { id: 2, title: 'Software Update', date: '2023-07-20', time: '09:00 - 10:00' },
+  const parkingSummary = [
+    { status: 'Available', count: 12, icon: <LocalParking color="success" /> },
+    { status: 'Occupied', count: 8, icon: <DirectionsCar color="error" /> },
+    { status: 'Reserved', count: 5, icon: <Event color="primary" /> },
+    { status: 'Maintenance', count: 2, icon: <Warning color="warning" /> },
   ];
 
-  const handleCloseError = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setError(null);
-  };
+  const recentTransactions = [
+    { id: 201, status: 'Completed', description: 'Parking slot #12', amount: '$5.00' },
+    { id: 202, status: 'Ongoing', description: 'Parking slot #5', amount: '$3.00' },
+    { id: 203, status: 'Reserved', description: 'Parking slot #8', amount: '$2.50' },
+  ];
+
+  const occupancyTrends = [
+    { name: 'Available', value: 12 },
+    { name: 'Occupied', value: 8 },
+    { name: 'Reserved', value: 5 },
+    { name: 'Maintenance', value: 2 },
+  ];
+
+  const upcomingReservations = [
+    { id: 1, title: 'Slot #7 Reserved', date: '2025-03-02', time: '10:00 - 12:00' },
+    { id: 2, title: 'Slot #3 Reserved', date: '2025-03-05', time: '15:00 - 17:00' },
+  ];
 
   const handleFilterChange = (event) => {
     setDayFilter(event.target.value);
   };
 
-  if (isLoading) {
-    return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <CircularProgress />
-      </Box>
-    );
-  }
-
   return (
-    <Box sx={{ 
-      p: { xs: 2, sm: 3, md: 4 }, 
-      paddingTop: { xs: '80px', sm: '100px', md: '120px' },
-      backgroundColor: '#f5f5f5',
-      maxWidth: '1200px',
-      margin: '0 auto'
-    }}>
+    <Box sx={{ p: 4, backgroundColor: '#f5f5f5', paddingTop: '80px', maxWidth: '1200px', margin: '0 auto' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', color: '#333', fontSize: { xs: '1.5rem', sm: '2rem' } }}>
-          User Dashboard
-        </Typography>
+        <Typography variant="h4" sx={{ fontWeight: 'bold' }}>Parking Dashboard</Typography>
         <FormControl variant="outlined" size="small">
           <InputLabel>Filter</InputLabel>
-          <Select
-            value={dayFilter}
-            onChange={handleFilterChange}
-            label="Filter"
-          >
+          <Select value={dayFilter} onChange={handleFilterChange} label="Filter">
             <MenuItem value={0}>Today</MenuItem>
             <MenuItem value={1}>Last 24 hours</MenuItem>
             <MenuItem value={7}>Last 7 days</MenuItem>
@@ -133,23 +53,17 @@ const UserDashboard = () => {
           </Select>
         </FormControl>
       </Box>
-
-      <Typography variant="subtitle1" gutterBottom>
-        Showing data for: {dayFilter === 0 ? 'Today' : dayFilter === 'all' ? 'All Time' : `Last ${dayFilter} days`}
-      </Typography>
-
       <Grid container spacing={3}>
-        {/* Ticket Summary */}
         <Grid item xs={12} md={6}>
-          <Paper elevation={3} sx={{ p: 2, height: '100%', borderRadius: '15px', boxShadow: '0 4px 20px 0 rgba(0,0,0,0.12)' }}>
-            <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>Ticket Summary</Typography>
+          <Paper sx={{ p: 2, borderRadius: '15px' }}>
+            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Parking Summary</Typography>
             <Grid container spacing={2}>
-              {ticketSummary.map((item) => (
+              {parkingSummary.map((item) => (
                 <Grid item xs={6} sm={3} key={item.status}>
-                  <Card sx={{ bgcolor: '#f5f5f5', borderRadius: '10px', transition: 'transform 0.3s', '&:hover': { transform: 'scale(1.05)' } }}>
+                  <Card sx={{ bgcolor: '#f5f5f5', borderRadius: '10px' }}>
                     <CardContent>
                       {item.icon}
-                      <Typography variant="h5" sx={{ mt: 1 }}>{item.count}</Typography>
+                      <Typography variant="h5">{item.count}</Typography>
                       <Typography variant="body2">{item.status}</Typography>
                     </CardContent>
                   </Card>
@@ -158,13 +72,11 @@ const UserDashboard = () => {
             </Grid>
           </Paper>
         </Grid>
-
-        {/* Ticket Trends Chart */}
         <Grid item xs={12} md={6}>
-          <Paper elevation={3} sx={{ p: 2, height: '100%', borderRadius: '15px', boxShadow: '0 4px 20px 0 rgba(0,0,0,0.12)' }}>
-            <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>Ticket Trends</Typography>
+          <Paper sx={{ p: 2, borderRadius: '15px' }}>
+            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Occupancy Trends</Typography>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={ticketTrends}>
+              <BarChart data={occupancyTrends}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis />
@@ -175,86 +87,41 @@ const UserDashboard = () => {
             </ResponsiveContainer>
           </Paper>
         </Grid>
-
-        {/* Upcoming Maintenance */}
         <Grid item xs={12} md={6}>
-          <Paper elevation={3} sx={{ p: 2, height: '100%', borderRadius: '15px', boxShadow: '0 4px 20px 0 rgba(0,0,0,0.12)' }}>
-            <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>Upcoming Maintenance</Typography>
+          <Paper sx={{ p: 2, borderRadius: '15px' }}>
+            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Upcoming Reservations</Typography>
             <List>
-              {upcomingMaintenance.map((event) => (
+              {upcomingReservations.map((event) => (
                 <React.Fragment key={event.id}>
-                  <ListItem alignItems="flex-start">
-                    <ListItemText
-                      primary={event.title}
-                      secondary={
-                        <React.Fragment>
-                          <Typography
-                            sx={{ display: 'inline' }}
-                            component="span"
-                            variant="body2"
-                            color="text.primary"
-                          >
-                            Date: {event.date}
-                          </Typography>
-                          {` — Time: ${event.time}`}
-                        </React.Fragment>
-                      }
-                    />
-                    <CalendarToday color="action" />
+                  <ListItem>
+                    <ListItemText primary={event.title} secondary={`Date: ${event.date} - Time: ${event.time}`} />
+                    <Event color="action" />
                   </ListItem>
-                  <Divider component="li" />
+                  <Divider />
                 </React.Fragment>
               ))}
             </List>
           </Paper>
         </Grid>
-
-        {/* Recent Tickets */}
         <Grid item xs={12} md={6}>
-          <Paper elevation={3} sx={{ p: 2, borderRadius: '15px', boxShadow: '0 4px 20px 0 rgba(0,0,0,0.12)' }}>
-            <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>Recent Tickets</Typography>
+          <Paper sx={{ p: 2, borderRadius: '15px' }}>
+            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Recent Transactions</Typography>
             <List>
-              {recentTickets.map((ticket) => (
-                <React.Fragment key={ticket.id}>
-                  <ListItem alignItems="flex-start">
-                    <ListItemText
-                      primary={`Ticket #${ticket.id}: ${ticket.description}`}
-                      secondary={
-                        <React.Fragment>
-                          <Typography
-                            sx={{ display: 'inline' }}
-                            component="span"
-                            variant="body2"
-                            color="text.primary"
-                          >
-                            Status: 
-                          </Typography>
-                          {` ${ticket.status}`}
-                        </React.Fragment>
-                      }
-                    />
-                    <Chip 
-                      label={ticket.status} 
-                      color={
-                        ticket.status === 'Open' ? 'error' : 
-                        ticket.status === 'In Progress' ? 'primary' : 
-                        ticket.status === 'Resolved' ? 'success' : 
-                        'warning'
-                      } 
-                      size="small" 
-                    />
+              {recentTransactions.map((transaction) => (
+                <React.Fragment key={transaction.id}>
+                  <ListItem>
+                    <ListItemText primary={`Transaction #${transaction.id}: ${transaction.description}`} secondary={`Status: ${transaction.status} - Amount: ${transaction.amount}`} />
+                    <Chip label={transaction.status} color={transaction.status === 'Completed' ? 'success' : transaction.status === 'Ongoing' ? 'primary' : 'warning'} size="small" />
                   </ListItem>
-                  <Divider component="li" />
+                  <Divider />
                 </React.Fragment>
               ))}
             </List>
           </Paper>
         </Grid>
       </Grid>
-      <Snackbar open={!!error} autoHideDuration={6000} onClose={handleCloseError}>
-        <Alert onClose={handleCloseError} severity="error" sx={{ width: '100%' }}>
-          {error}
-        </Alert>
+      <Snackbar open={!!error} autoHideDuration={6000} onClose={() => setError(null)}>
+        <Alert severity="error">{error}</Alert>
       </Snackbar>
     </Box>
   );
