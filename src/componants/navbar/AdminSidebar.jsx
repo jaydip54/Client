@@ -26,7 +26,11 @@ import {
   Email,
   Feedback,
   LocalShipping,
+  VerticalShadesClosedSharp,
+
 } from "@mui/icons-material";
+import BusinessIcon from '@mui/icons-material/Business';
+import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import { useDispatch } from "react-redux";
 import { logout } from "../../redux/slices/authSlice";
 import { clearProfile } from "../../redux/slices/profileSlice";
@@ -99,6 +103,23 @@ const AdminSidebar = () => {
             <People sx={{ color: darkMode ? "white" : "black" }} />
           </ListItemIcon>
           <ListItemText primary="User Management" />
+        </ListItem>
+
+
+
+
+        <ListItem component={Link} to="/vehiclemanage" onClick={toggleSidebar}>
+          <ListItemIcon>
+            <DirectionsCarIcon sx={{ color: darkMode ? "white" : "black" }} />
+          </ListItemIcon>
+          <ListItemText primary="Vehicle Management" />
+        </ListItem>
+
+        <ListItem component={Link} to="/businessplaceManage" onClick={toggleSidebar}>
+          <ListItemIcon>
+            <BusinessIcon sx={{ color: darkMode ? "white" : "black" }} />
+          </ListItemIcon>
+          <ListItemText primary="Business Place Management" />
         </ListItem>
 
         <ListItem component={Link} to="/categorymanage" onClick={toggleSidebar}>

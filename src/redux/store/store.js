@@ -7,6 +7,8 @@ import areareducer from '../slices/area'
 import categoryReducer from '../slices/category'
 import loginHistoryreducer from '../slices/loginhistory'
 import packagesReducer from '../slices/package'
+import vehicleRsducer from '../slices/vehicle'
+import businessPlaceReducer from '../slices/bussinessPlace'
 
 const store = configureStore({
     reducer: {
@@ -18,7 +20,8 @@ const store = configureStore({
         category: categoryReducer,
         loginHistory: loginHistoryreducer,
         packages: packagesReducer,
-        
+        vehicle: vehicleRsducer,
+        businessPlace: businessPlaceReducer,
     }
 })
 

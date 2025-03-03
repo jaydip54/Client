@@ -34,17 +34,22 @@ import PackageList from './componants/pages/PackageList';
 import { fetchPackages } from './redux/slices/package';
 import { fetchParkingSpaces } from './redux/slices/parkingSpace';
 import UserParkingList from './componants/pages/UserParkingList';
+import VehicleManagement from './componants/pages/VehicleManagement';
+import { fetchVehicles } from './redux/slices/vehicle';
+import BusinessPlaceManagement from './componants/pages/BusinessManagement';
 
 function App() {
   let dispatch = useDispatch();
   dispatch(fetchCities());
   dispatch(fetchAreas())
   dispatch(fetchParkingSpaces());
+
   let { type, token } = useSelector((state) => state.auth);
 
-  dispatch(fetchPackages({ token: token }));
-  useEffect(() => {
 
+  useEffect(() => {
+    dispatch(fetchPackages({ token: token }));
+    dispatch(fetchVehicles(token));
     if (token && type !== null) {
       dispatch(getProfile({ endpoint: ProfileUserEndpoint, token: token }));
       if (type === 1) {
@@ -82,6 +87,8 @@ function App() {
               <Route path='/admin/changepassword' element={<ResetPassword />} />
               <Route path="/managefeedback" element={<ManageFeedback />} />
               <Route path="/history" element={<UserLoginHistory />} />
+              <Route path='/vehiclemanage' element={<VehicleManagement />} />
+              <Route path="/businessplaceManage" element={<BusinessPlaceManagement />} />
             </Routes>
           </>
         );

@@ -1,5 +1,5 @@
 
-export const baseUrl = `http://localhost:5000/api/`
+export const baseUrl = `https://server-rusr.onrender.com/api/`
 
 //endpoints users
 export const loginEndpoint = `auth/login`;
