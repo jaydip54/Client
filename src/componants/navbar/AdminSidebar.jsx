@@ -27,6 +27,7 @@ import {
   Feedback,
   LocalShipping,
   VerticalShadesClosedSharp,
+  AssignmentInd,
 
 } from "@mui/icons-material";
 import BusinessIcon from '@mui/icons-material/Business';
@@ -89,6 +90,22 @@ const AdminSidebar = () => {
             <LocationCity sx={{ color: darkMode ? "white" : "black" }} />
           </ListItemIcon>
           <ListItemText primary="City Management" />
+        </ListItem>
+
+        <ListItem component={Link} to="/parkingspace" onClick={toggleSidebar}>
+          <ListItemIcon>
+            {/* Replace LocationCity with your desired icon */}
+            <AssignmentInd sx={{ color: darkMode ? "white" : "black" }} />
+          </ListItemIcon>
+          <ListItemText primary="parkingspace" />
+        </ListItem>
+
+
+        <ListItem component={Link} to="/assign" onClick={toggleSidebar}>
+          <ListItemIcon>
+            <LocationCity sx={{ color: darkMode ? "white" : "black" }} />
+          </ListItemIcon>
+          <ListItemText primary="Assign places" />
         </ListItem>
 
         <ListItem component={Link} to="/areamanagement" onClick={toggleSidebar}>

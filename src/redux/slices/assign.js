@@ -1,112 +1,91 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import api from "../../api";
+import axios from "axios";
+import { baseUrl } from "../../Atoms/constatnt";
 
-// Create (Assign Parking)
-export const assignParkingSpace = createAsyncThunk(
-    "parking/assignParkingSpace",
-    async ({ businessPlaceId, parkingSpaceId, token }, { rejectWithValue }) => {
-        try {
-            const response = await api.post(
-                "/parking/assign",
-                { businessPlaceId, parkingSpaceId },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            return response.data;
-        } catch (error) {
-            return rejectWithValue(error.response.data);
-        }
-    }
-);
+const API_URL = `${baseUrl}assign`; // Adjust as per your backend route
 
-// Read (Get All Assigned Parking Spaces)
-export const fetchAssignedParking = createAsyncThunk(
-    "parking/fetchAssignedParking",
+export const fetchParkingAssignments = createAsyncThunk(
+    "parkingAssignment/fetch",
     async (token, { rejectWithValue }) => {
         try {
-            const response = await api.get("/parking/assignments", {
-                headers: { Authorization: `Bearer ${token}` },
+            const response = await axios.get(API_URL, {
+                headers: { Authorization: `${token}` }
             });
-            return response.data;
+            return response.data.data;
         } catch (error) {
             return rejectWithValue(error.response.data);
         }
     }
 );
 
-// Update (Modify Assigned Parking)
-export const updateAssignedParking = createAsyncThunk(
-    "parking/updateAssignedParking",
-    async ({ id, businessPlaceId, parkingSpaceId, token }, { rejectWithValue }) => {
+export const addParkingAssignment = createAsyncThunk(
+    "parkingAssignment/add",
+    async ({ businessPlaceId, parkingSpaceId, token }, { rejectWithValue }) => {
         try {
-            const response = await api.put(
-                `/parking/assign/${id}`,
-                { businessPlaceId, parkingSpaceId },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            return response.data;
+            const response = await axios.post(API_URL, { businessPlaceId, parkingSpaceId }, {
+                headers: { Authorization: `${token}` }
+            });
+            return response.data.data;
         } catch (error) {
             return rejectWithValue(error.response.data);
         }
     }
 );
 
-// Delete (Remove Assigned Parking)
-export const deleteAssignedParking = createAsyncThunk(
-    "parking/deleteAssignedParking",
+export const updateParkingAssignment = createAsyncThunk(
+    "parkingAssignment/update",
+    async ({ id, updatedData, token }, { rejectWithValue }) => {
+        try {
+            const response = await axios.put(`${API_URL}/${id}`, updatedData, {
+                headers: { Authorization: `${token}` }
+            });
+            return response.data.data;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+export const deleteParkingAssignment = createAsyncThunk(
+    "parkingAssignment/delete",
     async ({ id, token }, { rejectWithValue }) => {
         try {
-            const response = await api.delete(`/parking/assign/${id}`, {
-                headers: { Authorization: `Bearer ${token}` },
+            await axios.delete(`${API_URL}/${id}`, {
+                headers: { Authorization: `Bearer ${token}` }
             });
-            return response.data;
+            return id;
         } catch (error) {
             return rejectWithValue(error.response.data);
         }
     }
 );
 
-const parkingSlice = createSlice({
-    name: "parking",
-    initialState: {
-        assignedParking: [],
-        isLoading: false,
-        error: null,
-    },
+const parkingAssignmentSlice = createSlice({
+    name: "parkingAssignment",
+    initialState: { assignments: [], isLoading: false, error: null },
     reducers: {},
     extraReducers: (builder) => {
         builder
-            // Fetch Assigned Parking
-            .addCase(fetchAssignedParking.pending, (state) => {
-                state.isLoading = true;
-            })
-            .addCase(fetchAssignedParking.fulfilled, (state, action) => {
+            .addCase(fetchParkingAssignments.pending, (state) => { state.isLoading = true; })
+            .addCase(fetchParkingAssignments.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.assignedParking = action.payload;
+                state.assignments = action.payload;
             })
-            .addCase(fetchAssignedParking.rejected, (state, action) => {
+            .addCase(fetchParkingAssignments.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload;
             })
-
-            // Assign Parking
-            .addCase(assignParkingSpace.fulfilled, (state, action) => {
-                state.assignedParking.push(action.payload);
+            .addCase(addParkingAssignment.fulfilled, (state, action) => {
+                state.assignments.push(action.payload);
             })
-
-            // Update Assigned Parking
-            .addCase(updateAssignedParking.fulfilled, (state, action) => {
-                state.assignedParking = state.assignedParking.map((item) =>
-                    item._id === action.payload._id ? action.payload : item
-                );
+            .addCase(updateParkingAssignment.fulfilled, (state, action) => {
+                const index = state.assignments.findIndex(a => a._id === action.payload._id);
+                if (index !== -1) state.assignments[index] = action.payload;
             })
-
-            // Delete Assigned Parking
-            .addCase(deleteAssignedParking.fulfilled, (state, action) => {
-                state.assignedParking = state.assignedParking.filter(
-                    (item) => item._id !== action.payload._id
-                );
+            .addCase(deleteParkingAssignment.fulfilled, (state, action) => {
+                state.assignments = state.assignments.filter(a => a._id !== action.payload);
             });
-    },
+    }
 });
 
-export default parkingSlice.reducer;
+export default parkingAssignmentSlice.reducer;

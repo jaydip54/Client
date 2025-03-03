@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux';
 import { clearProfile } from '../../redux/slices/profileSlice';
 import { logout } from '../../redux/slices/authSlice';
 import PinDropIcon from '@mui/icons-material/PinDrop';
+import BusinessIcon from '@mui/icons-material/Business';
 const SupervisorSidebar = () => {
     const [darkMode, setDarkMode] = useState(true);
     const [isSidebarVisible, setIsSidebarVisible] = useState(false);
@@ -116,7 +117,12 @@ const SupervisorSidebar = () => {
                         </ListItemIcon>
                         <ListItemText primary="Personal Login History" />
                     </ListItem>
-
+                    <ListItem component={Link} to="/businessplaceManage" onClick={toggleSidebar}>
+                        <ListItemIcon>
+                            <BusinessIcon sx={{ color: darkMode ? "white" : "black" }} />
+                        </ListItemIcon>
+                        <ListItemText primary="Business Place Management" />
+                    </ListItem>
                     <ListItem component={Link} to="/feedback" onClick={toggleSidebar}>
                         <ListItemIcon>
                             <Feedback sx={{ color: darkMode ? 'white' : 'black' }} />

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
     fetchBusinessPlaces,
@@ -15,28 +15,20 @@ import { Delete, Edit, Add } from "@mui/icons-material";
 const BusinessPlaceManagement = () => {
     const dispatch = useDispatch();
     const { businessPlaces, isLoading, error } = useSelector(state => state.businessPlace);
-    console.log("🚀 ~ BusinessPlaceManagement ~ businessPlaces:", businessPlaces)
-    const { token } = useSelector(state => state.auth);
+    const { type, token } = useSelector(state => state.auth); // Get user type & token
     const { cities, packages, vehicles, areas, categories } = useSelector(state => ({
         cities: state.city.cities,
         packages: state.packages.packages,
         vehicles: state.vehicle.vehicles,
         areas: state.area.areas,
         categories: state.category.categories,
-
     }));
-    const { register } = useSelector((state) => state.register);
-    console.log("🚀 ~ BusinessPlaceManagement ~ register:", register)
-    const placeOwner = register.filter((item) => {
-        return item.type == 2
-    })
-    console.log("🚀 ~ placeOwner ~ placeOwner:", placeOwner)
 
+    const isAdmin = type === 1; // Only type === 1 users can modify
 
-    console.log("🚀 ~ BusinessPlaceManagement ~ areas:", areas)
-    console.log("🚀 ~ BusinessPlaceManagement ~ categories:", categories)
-    console.log("🚀 ~ BusinessPlaceManagement ~ vehicles:", vehicles)
-    console.log("🚀 ~ BusinessPlaceManagement ~ packages:", packages)
+    useEffect(() => {
+        if (token) dispatch(fetchBusinessPlaces(token));
+    }, [dispatch, token]);
 
     const [openDialog, setOpenDialog] = useState(false);
     const [editMode, setEditMode] = useState(false);
@@ -44,14 +36,8 @@ const BusinessPlaceManagement = () => {
     const [businessPlaceData, setBusinessPlaceData] = useState({
         placeName: "", address: "", placeEmailId: "", contact: "", location: "", city: "",
         packageId: "", vehicleId: "", areaId: "", categoryId: "", over: false, activeStatus: true,
-        activeDate: "", deactiveDate: "", user: ""
+        activeDate: "", deactiveDate: ""
     });
-
-    useEffect(() => {
-        if (token) {
-            dispatch(fetchBusinessPlaces(token));
-        }
-    }, [dispatch, token]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -64,8 +50,7 @@ const BusinessPlaceManagement = () => {
     };
 
     const handleSaveBusinessPlace = () => {
-        if (!token) return;
-
+        if (!token || !isAdmin) return;
         if (editMode) {
             dispatch(updateBusinessPlace({ id: selectedBusinessPlaceId, updatedData: businessPlaceData, token }));
         } else {
@@ -75,6 +60,7 @@ const BusinessPlaceManagement = () => {
     };
 
     const handleEditBusinessPlace = (place) => {
+        if (!isAdmin) return;
         setBusinessPlaceData({ ...place });
         setSelectedBusinessPlaceId(place._id);
         setEditMode(true);
@@ -82,7 +68,7 @@ const BusinessPlaceManagement = () => {
     };
 
     const handleDeleteBusinessPlace = (id) => {
-        if (!token) return;
+        if (!token || !isAdmin) return;
         if (window.confirm("Are you sure you want to delete this business place?")) {
             dispatch(deleteBusinessPlace({ id, token }));
         }
@@ -116,23 +102,28 @@ const BusinessPlaceManagement = () => {
                                 <Typography>Contact: {place.contact}</Typography>
                                 <Typography>Location: {place.location}</Typography>
                             </Box>
-                            <Box>
-                                <IconButton color="primary" onClick={() => handleEditBusinessPlace(place)}>
-                                    <Edit />
-                                </IconButton>
-                                <IconButton color="secondary" onClick={() => handleDeleteBusinessPlace(place._id)}>
-                                    <Delete />
-                                </IconButton>
-                            </Box>
+                            {isAdmin && (
+                                <Box>
+                                    <IconButton color="primary" onClick={() => handleEditBusinessPlace(place)}>
+                                        <Edit />
+                                    </IconButton>
+                                    <IconButton color="secondary" onClick={() => handleDeleteBusinessPlace(place._id)}>
+                                        <Delete />
+                                    </IconButton>
+                                </Box>
+                            )}
                         </ListItem>
                     ))}
                 </List>
             )}
 
-            <Button variant="contained" color="primary" startIcon={<Add />} sx={{ mt: 2 }} onClick={() => setOpenDialog(true)}>
-                Add Business Place
-            </Button>
+            {isAdmin && (
+                <Button variant="contained" color="primary" startIcon={<Add />} sx={{ mt: 2 }} onClick={() => setOpenDialog(true)}>
+                    Add Business Place
+                </Button>
+            )}
 
+            {/* Dialog for Add/Edit */}
             <Dialog open={openDialog} onClose={handleCloseDialog}>
                 <DialogTitle>{editMode ? "Edit Business Place" : "Add New Business Place"}</DialogTitle>
                 <DialogContent>
@@ -141,43 +132,19 @@ const BusinessPlaceManagement = () => {
                     <TextField name="placeEmailId" label="Email" type="email" fullWidth margin="dense" value={businessPlaceData.placeEmailId} onChange={handleInputChange} />
                     <TextField name="contact" label="Contact" fullWidth margin="dense" value={businessPlaceData.contact} onChange={handleInputChange} />
                     <TextField name="location" label="Location" fullWidth margin="dense" value={businessPlaceData.location} onChange={handleInputChange} />
-                    <TextField select name="user" label="user" fullWidth margin="dense" value={businessPlaceData.user} onChange={handleInputChange}>
-                        {placeOwner.map(veh => (
-                            <MenuItem key={veh._id} value={veh._id}>{veh.name} - {veh.contact}</MenuItem>
-                        ))}
-                    </TextField>
                     <TextField select name="city" label="City" fullWidth margin="dense" value={businessPlaceData.city} onChange={handleInputChange}>
                         {cities.map(city => (
                             <MenuItem key={city._id} value={city._id}>{city.name}</MenuItem>
                         ))}
                     </TextField>
-                    <TextField select name="areaId" label="area" fullWidth margin="dense" value={businessPlaceData.areaId} onChange={handleInputChange}>
-                        {areas.map(area => (
-                            <MenuItem key={area._id} value={area._id}>{area.name}</MenuItem>
-                        ))}
-                    </TextField>
-                    <TextField select name="categoryId" label="categorie" fullWidth margin="dense" value={businessPlaceData.categoryId} onChange={handleInputChange}>
-                        {categories.map(cate => (
-                            <MenuItem key={cate._id} value={cate._id}>{cate.Name}</MenuItem>
-                        ))}
-                    </TextField>
-                    <TextField select name="packageId" label="package" fullWidth margin="dense" value={businessPlaceData.packageId} onChange={handleInputChange}>
-                        {packages.map(pack => (
-                            <MenuItem key={pack._id} value={pack._id}>{pack.name}</MenuItem>
-                        ))}
-                    </TextField>
-                    <TextField select name="vehicleId" label="vehicle" fullWidth margin="dense" value={businessPlaceData.vehicleId} onChange={handleInputChange}>
-                        {vehicles.map(veh => (
-                            <MenuItem key={veh._id} value={veh._id}>{veh.name}</MenuItem>
-                        ))}
-                    </TextField>
-
                     <FormControlLabel control={<Checkbox checked={businessPlaceData.over} onChange={handleCheckboxChange} name="over" />} label="Over" />
                     <FormControlLabel control={<Checkbox checked={businessPlaceData.activeStatus} onChange={handleCheckboxChange} name="activeStatus" />} label="Active Status" />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCloseDialog}>Cancel</Button>
-                    <Button onClick={handleSaveBusinessPlace} variant="contained">{editMode ? "Update" : "Add"}</Button>
+                    <Button onClick={handleSaveBusinessPlace} variant="contained" disabled={!isAdmin}>
+                        {editMode ? "Update" : "Add"}
+                    </Button>
                 </DialogActions>
             </Dialog>
         </Box>

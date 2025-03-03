@@ -37,6 +37,9 @@ import UserParkingList from './componants/pages/UserParkingList';
 import VehicleManagement from './componants/pages/VehicleManagement';
 import { fetchVehicles } from './redux/slices/vehicle';
 import BusinessPlaceManagement from './componants/pages/BusinessManagement';
+import { fetchBusinessPlaces, getAllLoginUserPlaces } from './redux/slices/bussinessPlace';
+import ParkingAssignmentManagement from './componants/pages/ParkingAssignmentManagement';
+import { fetchParkingAssignments } from './redux/slices/assign';
 
 function App() {
   let dispatch = useDispatch();
@@ -53,6 +56,8 @@ function App() {
     if (token && type !== null) {
       dispatch(getProfile({ endpoint: ProfileUserEndpoint, token: token }));
       if (type === 1) {
+        dispatch(fetchParkingAssignments(token));
+        dispatch(fetchBusinessPlaces(token));
         dispatch(getUser());
         dispatch(fetchCategories({ token: token }))
         dispatch(fetchAllLoginHistory({ token }));
@@ -60,6 +65,7 @@ function App() {
       if (type === 2) {
         dispatch(fetchCategories({ token: token }))
         dispatch(fetchLoginHistoryByUserLogin({ token: token }))
+        dispatch(getAllLoginUserPlaces(token));
       }
       if (type === 0) {
         dispatch(fetchLoginHistoryByUserLogin({ token: token }))
@@ -89,6 +95,8 @@ function App() {
               <Route path="/history" element={<UserLoginHistory />} />
               <Route path='/vehiclemanage' element={<VehicleManagement />} />
               <Route path="/businessplaceManage" element={<BusinessPlaceManagement />} />
+              <Route path="/assign" element={<ParkingAssignmentManagement />} />
+              <Route path="/parkingspace" element={< UserParkingList />} />
             </Routes>
           </>
         );
@@ -117,6 +125,7 @@ function App() {
               <Route path="/dashboard" element={<ParkingOwnerDashboard />} />
               <Route path='/supervisor/changepassword' element={<ResetPassword />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/businessplaceManage" element={<BusinessPlaceManagement />} />
               <Route path="/packages" element={<PackageList />} />
               <Route path="/history" element={<UserLoginHistory />} />
               <Route path="/feedback" element={<FeedbackForm />} />

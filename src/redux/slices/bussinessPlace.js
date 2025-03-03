@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { baseUrl } from "../../Atoms/constatnt";
 
-const API_URL = `${baseUrl}/bussinesPlace`;
+const API_URL = `${baseUrl}bussinesPlace`;
 
 // Fetch business places
 export const fetchBusinessPlaces = createAsyncThunk(
@@ -10,6 +10,20 @@ export const fetchBusinessPlaces = createAsyncThunk(
     async (token, { rejectWithValue }) => {
         try {
             const response = await axios.get(API_URL, {
+                headers: { Authorization: `${token}` }
+            });
+            return response.data.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data || error.message);
+        }
+    }
+);
+
+export const getAllLoginUserPlaces = createAsyncThunk(
+    "businessPlace/getAllLoginUserPlaces",
+    async (token, { rejectWithValue }) => {
+        try {
+            const response = await axios.get(`${API_URL}/login`, {
                 headers: { Authorization: `${token}` }
             });
             return response.data.data;
@@ -97,6 +111,18 @@ const businessPlaceSlice = createSlice({
             })
             .addCase(deleteBusinessPlace.fulfilled, (state, action) => {
                 state.businessPlaces = state.businessPlaces.filter(bp => bp._id !== action.payload);
+            })
+            .addCase(getAllLoginUserPlaces.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(getAllLoginUserPlaces.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.businessPlaces = action.payload;
+            })
+            .addCase(getAllLoginUserPlaces.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload;
             });
     }
 });

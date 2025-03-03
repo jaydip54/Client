@@ -9,7 +9,8 @@ import loginHistoryreducer from '../slices/loginhistory'
 import packagesReducer from '../slices/package'
 import vehicleRsducer from '../slices/vehicle'
 import businessPlaceReducer from '../slices/bussinessPlace'
-
+import parkingAssignmentReducer from '../slices/assign'
+import parkingSpacesReducer from '../slices/parkingSpace'
 const store = configureStore({
     reducer: {
         register: registerreducer,
@@ -22,6 +23,8 @@ const store = configureStore({
         packages: packagesReducer,
         vehicle: vehicleRsducer,
         businessPlace: businessPlaceReducer,
+        parkingAssignment: parkingAssignmentReducer,
+        parkingSpaces: parkingSpacesReducer,
     }
 })
 
