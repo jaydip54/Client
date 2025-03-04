@@ -28,6 +28,7 @@ export const addVehicle = createAsyncThunk("vehicle/addVehicle", async ({ vehicl
 });
 
 export const updateVehicle = createAsyncThunk("vehicle/updateVehicle", async ({ id, updatedData, token }, { rejectWithValue }) => {
+    // console.log("🚀 ~ updateVehicle ~ updatedData:", updatedData)
     try {
         const response = await axios.put(`${API_URL}/${id}`, updatedData, {
             headers: { Authorization: `${token}` }
