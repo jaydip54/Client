@@ -36,6 +36,8 @@ import { useDispatch } from "react-redux";
 import { logout } from "../../redux/slices/authSlice";
 import { clearProfile } from "../../redux/slices/profileSlice";
 import PinDropIcon from '@mui/icons-material/PinDrop';
+import ReceiptLong from "@mui/icons-material/ReceiptLong"; // Import the booking list icon
+
 const AdminSidebar = () => {
   const [darkMode, setDarkMode] = useState(true);
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
@@ -101,12 +103,12 @@ const AdminSidebar = () => {
         </ListItem>
 
 
-        <ListItem component={Link} to="/assign" onClick={toggleSidebar}>
+        {/* <ListItem component={Link} to="/assign" onClick={toggleSidebar}>
           <ListItemIcon>
             <LocationCity sx={{ color: darkMode ? "white" : "black" }} />
           </ListItemIcon>
           <ListItemText primary="Assign places" />
-        </ListItem>
+        </ListItem> */}
 
         <ListItem component={Link} to="/areamanagement" onClick={toggleSidebar}>
           <ListItemIcon>
@@ -137,6 +139,12 @@ const AdminSidebar = () => {
             <BusinessIcon sx={{ color: darkMode ? "white" : "black" }} />
           </ListItemIcon>
           <ListItemText primary="Business Place Management" />
+        </ListItem>
+        <ListItem component={Link} to="/bookinglist" onClick={toggleSidebar}>
+          <ListItemIcon>
+            <ReceiptLong sx={{ color: darkMode ? "white" : "black" }} />
+          </ListItemIcon>
+          <ListItemText primary="Booking List" />
         </ListItem>
 
         <ListItem component={Link} to="/categorymanage" onClick={toggleSidebar}>

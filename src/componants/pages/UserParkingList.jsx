@@ -24,7 +24,7 @@ const UserParkingList = () => {
     const handleSave = () => {
         if (!token) return;
         if (editMode) {
-            dispatch(updateParkingSpace({ id: parkingData.id, name: parkingData.name, token }));
+            dispatch(updateParkingSpace({ id: parkingData.id, name: parkingData.name }));
         } else {
             dispatch(addParkingSpace(parkingData.name));
         }

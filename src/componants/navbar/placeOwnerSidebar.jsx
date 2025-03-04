@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Box, List, ListItem, ListItemIcon, ListItemText, Button } from '@mui/material';
-import { AddCircleOutline, ViewList, ExitToApp, AccountCircle, Brightness4, Brightness7, Menu, Close, Dashboard, Assessment, AssignmentInd, AssignmentTurnedIn, PersonAdd, Lock, History, Feedback, LocalShipping } from '@mui/icons-material';
+import { AddCircleOutline, ViewList, ExitToApp, AccountCircle, Brightness4, Brightness7, Menu, Close, Dashboard, Assessment, AssignmentInd, AssignmentTurnedIn, PersonAdd, Lock, History, Feedback, LocalShipping, ReceiptLong } from '@mui/icons-material';
 import { useDispatch } from 'react-redux';
 import { clearProfile } from '../../redux/slices/profileSlice';
 import { logout } from '../../redux/slices/authSlice';
@@ -117,6 +117,12 @@ const SupervisorSidebar = () => {
                         </ListItemIcon>
                         <ListItemText primary="Personal Login History" />
                     </ListItem>
+                    <ListItem component={Link} to="/bookinglist" onClick={toggleSidebar}>
+                        <ListItemIcon>
+                            <ReceiptLong sx={{ color: darkMode ? "white" : "black" }} />
+                        </ListItemIcon>
+                        <ListItemText primary="Booking List" />
+                    </ListItem>
                     <ListItem component={Link} to="/businessplaceManage" onClick={toggleSidebar}>
                         <ListItemIcon>
                             <BusinessIcon sx={{ color: darkMode ? "white" : "black" }} />
@@ -135,7 +141,7 @@ const SupervisorSidebar = () => {
                         </ListItemIcon>
                         <ListItemText primary="Packages" />
                     </ListItem>
-                    <ListItem component={Link} to="/parkingspacemanage" onClick={toggleSidebar}>
+                    <ListItem component={Link} to="/parkingspace" onClick={toggleSidebar}>
                         <ListItemIcon>
                             <PinDropIcon sx={{ color: darkMode ? 'white' : 'black' }} />
                         </ListItemIcon>

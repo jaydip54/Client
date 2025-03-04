@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux';
 import { logout } from '../../redux/slices/authSlice';
 import { clearProfile } from '../../redux/slices/profileSlice';
 import PinDropIcon from '@mui/icons-material/PinDrop';
+import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 const UserSidebar = () => {
     const [darkMode, setDarkMode] = useState(true);
     const [isSidebarVisible, setIsSidebarVisible] = useState(false);
@@ -111,7 +112,12 @@ const UserSidebar = () => {
                         </ListItemIcon>
                         <ListItemText primary="Dashboard" />
                     </ListItem>
-
+                    <ListItem component={Link} to="/booking" onClick={toggleSidebar}>
+                        <ListItemIcon>
+                            <AddLocationAltIcon sx={{ color: darkMode ? 'white' : 'black' }} />
+                        </ListItemIcon>
+                        <ListItemText primary="Book Parking" />
+                    </ListItem>
                     <ListItem component={Link} to="/history" onClick={toggleSidebar}>
                         <ListItemIcon>
                             <History sx={{ color: darkMode ? 'white' : 'black' }} />

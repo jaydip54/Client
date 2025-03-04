@@ -11,6 +11,7 @@ import vehicleRsducer from '../slices/vehicle'
 import businessPlaceReducer from '../slices/bussinessPlace'
 import parkingAssignmentReducer from '../slices/assign'
 import parkingSpacesReducer from '../slices/parkingSpace'
+import bookingreducer from '../slices/ParkingBooking'
 const store = configureStore({
     reducer: {
         register: registerreducer,
@@ -25,6 +26,7 @@ const store = configureStore({
         businessPlace: businessPlaceReducer,
         parkingAssignment: parkingAssignmentReducer,
         parkingSpaces: parkingSpacesReducer,
+        bookings: bookingreducer,
     }
 })
 

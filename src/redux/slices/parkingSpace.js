@@ -23,7 +23,7 @@ export const addParkingSpace = createAsyncThunk(
     async (name, { rejectWithValue }) => {
         console.log("🚀 ~ data:", name)
         try {
-            const response = await axios.post(API_URL, {name});
+            const response = await axios.post(API_URL, { name });
             return response.data.parkingSpace;
         } catch (error) {
             return rejectWithValue(error.response?.data || "Error adding parking space");
@@ -34,10 +34,10 @@ export const addParkingSpace = createAsyncThunk(
 // Update an existing parking space (Admin/Owner Only)
 export const updateParkingSpace = createAsyncThunk(
     "parkingSpaces/update",
-    async ({ id, data }, { rejectWithValue }) => {
+    async ({ id, name }, { rejectWithValue }) => {
 
         try {
-            const response = await axios.put(`${API_URL}/${id}`, data
+            const response = await axios.put(`${API_URL}/${id}`, { name }
             );
             return response.data.updatedParkingSpace;
         } catch (error) {

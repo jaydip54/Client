@@ -40,6 +40,9 @@ import BusinessPlaceManagement from './componants/pages/BusinessManagement';
 import { fetchBusinessPlaces, getAllLoginUserPlaces } from './redux/slices/bussinessPlace';
 import ParkingAssignmentManagement from './componants/pages/ParkingAssignmentManagement';
 import { fetchParkingAssignments } from './redux/slices/assign';
+import ParkingBooking from './componants/pages/ParkingBooking';
+import { fetchBookings, fetchBookingsAll, fetchBookingsAllPlaceOwner } from './redux/slices/ParkingBooking';
+import BookingList from './componants/pages/BookingList';
 
 function App() {
   let dispatch = useDispatch();
@@ -53,11 +56,13 @@ function App() {
   useEffect(() => {
     dispatch(fetchPackages({ token: token }));
     dispatch(fetchVehicles(token));
+    dispatch(fetchBusinessPlaces(token));
     if (token && type !== null) {
+
       dispatch(getProfile({ endpoint: ProfileUserEndpoint, token: token }));
       if (type === 1) {
         dispatch(fetchParkingAssignments(token));
-        dispatch(fetchBusinessPlaces(token));
+        dispatch(fetchBookingsAll(token))
         dispatch(getUser());
         dispatch(fetchCategories({ token: token }))
         dispatch(fetchAllLoginHistory({ token }));
@@ -66,8 +71,10 @@ function App() {
         dispatch(fetchCategories({ token: token }))
         dispatch(fetchLoginHistoryByUserLogin({ token: token }))
         dispatch(getAllLoginUserPlaces(token));
+        dispatch(fetchBookingsAllPlaceOwner(token))
       }
       if (type === 0) {
+        dispatch(fetchBookings(token))
         dispatch(fetchLoginHistoryByUserLogin({ token: token }))
       }
     }
@@ -85,6 +92,7 @@ function App() {
               <Route path="/areamanagement" element={<AreaManagement />} />
               <Route path="/categorymanage" element={<CategoryManagement />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/bookinglist" element={<BookingList />} />
               <Route path="/loginhistory" element={<LoginHistory />} />
               <Route path='/usermanagement' element={<UserManagement />} />
               <Route path="/dashboard" element={<Dashboard />} />
@@ -113,6 +121,7 @@ function App() {
               <Route path="/feedback" element={<FeedbackForm />} />
               <Route path="/packages" element={<UserPackageList />} />
               <Route path="/parkingspace" element={< UserParkingList />} />
+              <Route path="/booking" element={<ParkingBooking />} />
             </Routes>
           </>
         );
@@ -129,6 +138,8 @@ function App() {
               <Route path="/packages" element={<PackageList />} />
               <Route path="/history" element={<UserLoginHistory />} />
               <Route path="/feedback" element={<FeedbackForm />} />
+              <Route path="/parkingspace" element={< UserParkingList />} />
+              <Route path="/bookinglist" element={<BookingList />} />
             </Routes>
           </>
         );
